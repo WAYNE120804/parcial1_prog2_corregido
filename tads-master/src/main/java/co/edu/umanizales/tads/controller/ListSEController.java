@@ -2,6 +2,7 @@ package co.edu.umanizales.tads.controller;
 
 import co.edu.umanizales.tads.controller.dto.KidDTO;
 import co.edu.umanizales.tads.controller.dto.KidsByLocationDTO;
+import co.edu.umanizales.tads.controller.dto.ReportKidsLocationGenderDTO;
 import co.edu.umanizales.tads.controller.dto.ResponseDTO;
 import co.edu.umanizales.tads.model.Kid;
 import co.edu.umanizales.tads.model.Location;
@@ -30,6 +31,7 @@ public class ListSEController {
                 200,listSEService.getKids(),null), HttpStatus.OK);
     }
 
+    //invertir lista
     @GetMapping("/invert")
     public ResponseEntity<ResponseDTO> invert(){
         listSEService.invert();
@@ -47,6 +49,7 @@ public class ListSEController {
                 null), HttpStatus.OK);
     }
 
+    //adicionar niños
     @PostMapping
     public ResponseEntity<ResponseDTO> addKid(@RequestBody KidDTO kidDTO){
         Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
@@ -55,74 +58,14 @@ public class ListSEController {
                    404,"La ubicación no existe",
                    null), HttpStatus.OK);
        }
-       /*
-       if(listSEService.getKids().getData().getIdentification()!= kidDTO.getIdentification()) {
-           */
-           listSEService.add(
-                   new Kid(kidDTO.getIdentification(),
-                           kidDTO.getName(), kidDTO.getAge(),
-                           kidDTO.getGender(), location));
-           return new ResponseEntity<>(new ResponseDTO(
-                   200, "Se ha adicionado el petacón", null), HttpStatus.OK);
-
-            /*
-       }else{
-           return new ResponseEntity<>(new ResponseDTO(
-                   404,"la identificacion ya existe",
-                   null), HttpStatus.OK);
-       }
-             */
+           listSEService.add(new Kid(kidDTO.getIdentification(), kidDTO.getName(), kidDTO.getAge(),
+                   kidDTO.getGender(), location));
+           return new ResponseEntity<>(new ResponseDTO(200, "Se ha adicionado el petacón", null),
+                   HttpStatus.OK);
 
     }
 
-    @GetMapping(path = "/kidsbycity")
-    public ResponseEntity<ResponseDTO> getKidsByCity(){
-        List<KidsByLocationDTO> kidsByLocationDTOList = new ArrayList<>();
-        for(Location loc: locationService.getLocations()){
-            int count = listSEService.getCountKidsBylocationsCode(loc.getCode());
-            int countm=0;
-            int countf=0;
-            if(count>0){
-                kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count,countm, countf));
-            }
-        }
-        return new ResponseEntity<>(new ResponseDTO(
-                200,kidsByLocationDTOList,
-                null), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/kidsbydepartament")
-    public ResponseEntity<ResponseDTO> getKidsByDepartament(){
-        List<KidsByLocationDTO> kidsByLocationDTOList = new ArrayList<>();
-        for(Location loc: locationService.getLocationsByCodeSize(5)){
-            int count = listSEService.getCountKidsBylocationsCode(loc.getCode());
-            int countm=0;
-            int countf=0;
-            if(count>0){
-                kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count,countm, countf));
-            }
-        }
-        return new ResponseEntity<>(new ResponseDTO(
-                200,kidsByLocationDTOList,
-                null), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/kidsbylocations")
-    public ResponseEntity<ResponseDTO> getKidsBylocationsCode(){
-        List<KidsByLocationDTO> kidsByLocationDTOList = new ArrayList<>();
-        for(Location loc: locationService.getLocationsByCodeSize(8)){
-            int count = listSEService.getCountKidsBylocationsCode(loc.getCode());
-            int countm=0;
-            int countf=0;
-            if(count>0){
-                kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count,countm, countf));
-            }
-        }
-        return new ResponseEntity<>(new ResponseDTO(
-                200,kidsByLocationDTOList,
-                null), HttpStatus.OK);
-    }
-
+    //borrar niño por edad
     @GetMapping(path = "/deletekid/{age}")
     public ResponseEntity<ResponseDTO>deleteKidByAge(@PathVariable byte age){
         listSEService.deleteKidbyAge(age);
@@ -130,28 +73,78 @@ public class ListSEController {
                 200,"niño eliminado",null), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/gainpositionkid")
-    public ResponseEntity<ResponseDTO>gainPositionById(String id, int gain){
+    //ganar posicion de niño
+    @GetMapping(path = "/gainpositionkid/{id}/{gain}")
+    public ResponseEntity<ResponseDTO>gainPositionById(@PathVariable String id,@PathVariable int gain){
         listSEService.gainPositionKid(id, gain);
         return new ResponseEntity<>(new ResponseDTO(
                 200,"nel niño gano posicion",null), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/kidsbycityandgender/{age}")
-    public ResponseEntity<ResponseDTO> getCountKidsBylocationAndGender(@PathVariable byte age){
+    //niños al comienzo
+    @GetMapping(path = "/orderboystostart")
+    public ResponseEntity<ResponseDTO>orderBoysToStart(){
+        listSEService.orderBoysToStart();
+        return new ResponseEntity<>(new ResponseDTO(
+                200,"niños ordenados al comienzo",null), HttpStatus.OK);
+    }
+
+    //obtener niños por ubicaciones (pais, departamentos, ciudades)
+    @GetMapping(path = "/kidsbylocations")
+    public ResponseEntity<ResponseDTO> getKidsByCity(){
         List<KidsByLocationDTO> kidsByLocationDTOList = new ArrayList<>();
         for(Location loc: locationService.getLocations()){
-            if(listSEService.getKids().getData().getAge()>age) {
-                int count = listSEService.getCountKidsBylocationsCode(loc.getCode());
-                int countm=listSEService.getCountKidsBylocationAndGenderM(loc.getCode());
-                int countf=listSEService.getCountKidsBylocationAndGenderF(loc.getCode());
-                if (count > 0) {
-                    kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count, countm, countf));
-                }
+            int count = listSEService.getCountKidsBylocationsCode(loc.getCode());
+            if(count>0){
+                kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count));
             }
         }
         return new ResponseEntity<>(new ResponseDTO(
                 200,kidsByLocationDTOList,
+                null), HttpStatus.OK);
+    }
+
+    //obtener niños por departamento
+    @GetMapping(path = "/kidsbydepartament")
+    public ResponseEntity<ResponseDTO> getKidsByDepartament(){
+        List<KidsByLocationDTO> kidsByLocationDTOList = new ArrayList<>();
+        for(Location loc: locationService.getLocationsByCodeSize(5)){
+            int count = listSEService.getCountKidsBylocationsCode(loc.getCode());
+
+            if(count>0){
+                kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count));
+            }
+        }
+        return new ResponseEntity<>(new ResponseDTO(
+                200,kidsByLocationDTOList,
+                null), HttpStatus.OK);
+    }
+
+    //niños por ciudad
+    @GetMapping(path = "/kidsbycity")
+    public ResponseEntity<ResponseDTO> getKidsBylocationsCode(){
+        List<KidsByLocationDTO> kidsByLocationDTOList = new ArrayList<>();
+        for(Location loc: locationService.getLocationsByCodeSize(8)){
+            int count = listSEService.getCountKidsBylocationsCode(loc.getCode());
+            if(count>0){
+                kidsByLocationDTOList.add(new KidsByLocationDTO(loc,count));
+            }
+        }
+        return new ResponseEntity<>(new ResponseDTO(
+                200,kidsByLocationDTOList,
+                null), HttpStatus.OK);
+    }
+
+
+
+    //obtener una informe de niños por cada ciudad con su respetivo genero
+    @GetMapping(path = "/kidsbylocationgenders/{age}")
+    public ResponseEntity<ResponseDTO> getReportKisLocationGenders(@PathVariable byte age) {
+        ReportKidsLocationGenderDTO report =
+                new ReportKidsLocationGenderDTO(locationService.getLocationsByCodeSize(8));
+        listSEService.getReportKidsByLocationGendersByAge(age, report);
+        return new ResponseEntity<>(new ResponseDTO(
+                200,report,
                 null), HttpStatus.OK);
     }
 

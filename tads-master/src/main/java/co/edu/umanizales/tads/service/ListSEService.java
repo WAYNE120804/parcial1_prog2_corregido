@@ -1,5 +1,6 @@
 package co.edu.umanizales.tads.service;
 
+import co.edu.umanizales.tads.controller.dto.ReportKidsLocationGenderDTO;
 import co.edu.umanizales.tads.model.Kid;
 import co.edu.umanizales.tads.model.ListSE;
 import co.edu.umanizales.tads.model.Node;
@@ -26,9 +27,10 @@ public class ListSEService {
     public int getCountKidsBylocationsCode(String code){return  kids.getCountKidsBylocationCode(code);}
     public void deleteKidbyAge(byte age){kids.deleteKidbyAge( age);}
     public void gainPositionKid(String id, int gain){kids.gainPositionKid(id,gain);}
-    public int getCountKidsBylocationAndGenderM(String code){return kids.getCountKidsBylocationAndGenderM(code);}
-
-    public int getCountKidsBylocationAndGenderF(String code){return kids.getCountKidsBylocationAndGenderF(code);}
+    public void losePositionKid(String id, int lose){kids.losePositionKid(id, lose);}
+    public void orderBoysToStart(){kids.orderBoysToStart();}
+    public void getReportKidsByLocationGendersByAge(byte age, ReportKidsLocationGenderDTO report){kids.
+            getReportKidsByLocationGendersByAge(age, report);}
 
 
 

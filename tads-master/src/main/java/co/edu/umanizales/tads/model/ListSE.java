@@ -2,6 +2,7 @@ package co.edu.umanizales.tads.model;
 
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import co.edu.umanizales.tads.controller.dto.KidDTO;
+import co.edu.umanizales.tads.controller.dto.ReportKidsLocationGenderDTO;
 import lombok.Data;
 
 @Data
@@ -61,6 +62,7 @@ public class ListSE {
         size++;
     }
 
+    //invertir lista
     public void invert() {
         if (this.head != null) {
             ListSE listCp = new ListSE();
@@ -111,10 +113,30 @@ public class ListSE {
                 listSECp.add(temp.getData());
                 temp.getNext();
             }
+
         }
         sum = gain - getPosById(id);
         listSECp.addInpos(getKidById(id), sum);
     }
+
+    // metodo para hacer que un niño pierda posiciones dadas
+
+    public void losePositionKid(String id, int lose) {
+        Node temp = head;
+        lose = 0;
+        int sum = 0;
+        ListSE listSECp = new ListSE();
+        if (head != null) {
+            while (temp != null && !temp.getData().getIdentification().equals(id)) {
+                listSECp.add(temp.getData());
+                temp.getNext();
+            }
+
+        }
+        sum = lose + getPosById(id);
+        listSECp.addInpos(getKidById(id), sum);
+    }
+
 
     public Kid getKidById(String id) {
         Node temp = this.head;
@@ -141,6 +163,7 @@ public class ListSE {
         temp.setNext(newNode);
     }
 
+    // ordenar niños al comienzo
     public void orderBoysToStart() {
         if (this.head != null) {
             ListSE listCp = new ListSE();
@@ -188,42 +211,19 @@ public class ListSE {
     }
 
     //obtener la lista de ciudad y ademas se sabra cuantos niños y niñas hay por separado
-    public int getCountKidsBylocationAndGenderF(String code) {
-        int count = 0;
-        int countm = 0;
-        int countf = 0;
-        if (this.head != null) {
+    public void getReportKidsByLocationGendersByAge(byte age, ReportKidsLocationGenderDTO report){
+        if(head !=null){
             Node temp = this.head;
-            while (temp != null) {
-                if (temp.getData().getLocation().getCode().equals(code)) {
-                    count++;
-                    if (temp.getData().getGender() == 'F') {
-                        countf++;
-
-                    }
+            while(temp!=null){
+                if(temp.getData().getAge()>age){
+                    report.updateQuantity(
+                            temp.getData().getLocation().getName(),
+                            temp.getData().getGender());
                 }
                 temp = temp.getNext();
             }
         }
-        return countf;
     }
 
-    public int getCountKidsBylocationAndGenderM(String code) {
-        int count = 0;
-        int countm = 0;
-        if (this.head != null) {
-            Node temp = this.head;
-            while (temp != null) {
-                if (temp.getData().getLocation().getCode().equals(code)) {
-                    count++;
-                    if (temp.getData().getGender() == 'M') {
-                        countm++;
-                    }
 
-                }
-                temp = temp.getNext();
-            }
-        }
-        return countm;
-    }
 }
