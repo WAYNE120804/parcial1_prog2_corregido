@@ -37,8 +37,7 @@ public class SaleController {
 
     //crear venta
     @PostMapping
-    public ResponseEntity<ResponseDTO> createSale(@RequestBody
-                                                  SaleDTO saleDTO) {
+    public ResponseEntity<ResponseDTO> createSale(@RequestBody SaleDTO saleDTO) {
         Seller findSeller = sellerService.getSellerById(saleDTO.getSellerId());
         if (findSeller == null) {
             return new ResponseEntity<>(new ResponseDTO(409,
@@ -133,7 +132,7 @@ public class SaleController {
                 null), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(path = "cantidadmayorstore")
+    @GetMapping(path = "cantidadmayorstore/{quant}")
     public ResponseEntity<ResponseDTO> getStoreByQuant(@PathVariable int quant){
         List<Store> beststores=new ArrayList<>();
         for(Sale i:saleService.getSales()){
