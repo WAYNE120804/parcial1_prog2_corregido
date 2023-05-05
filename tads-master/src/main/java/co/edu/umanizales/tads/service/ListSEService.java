@@ -2,6 +2,7 @@ package co.edu.umanizales.tads.service;
 
 
 import co.edu.umanizales.tads.controller.dto.ReportKidsLocationGenderDTO;
+import co.edu.umanizales.tads.exception.ListSEException;
 import co.edu.umanizales.tads.model.Kid;
 import co.edu.umanizales.tads.model.ListSE;
 import co.edu.umanizales.tads.model.Node;
@@ -19,17 +20,17 @@ public class ListSEService {
     }
 
     // ejercicio 1 invertir lista
-   public void invert(){kids.invert();}
+   public void invert()throws ListSEException{kids.invert();}
     public Node getKids(){return kids.getHead();}
 
     // adicionar
-    public void add(Kid kid){kids.add (kid);}
+    public void add(Kid kid)throws ListSEException{kids.add (kid);}
 
     //ejercicio 2 ordenar niños al comienzo
-    public void orderBoysToStart() {kids.orderBoysToStart ();}
+    public void orderBoysToStart()throws ListSEException {kids.orderBoysToStart ();}
 
     //ejercicio 3 intercalar niño niña
-    public void intercalateBoyGirl(){kids.intercalateBoyGirl();}
+    public void intercalateBoyGirl()throws ListSEException{kids.intercalateBoyGirl();}
 
     // ejercicios 4
     //elimina un niño que tenga una edad determinda
@@ -43,16 +44,16 @@ public class ListSEService {
 
     //ejercio 7
     //metodo para hacer que el costal de un niño adelante posiciones con una posiciones dadas
-    public void gainPositionKid(String id, int gain){kids.gainPositionKid(id,gain);}
+    public void gainPositionKid(String id, int gain)throws ListSEException{kids.gainPositionKid(id,gain);}
 
     // ejercicio 8 metodo para hacer que un niño pierda posiciones dadas
-    public void losePositionKid(String id, int lose){kids.losePositionKid(id, lose);}
+    public void losePositionKid(String id, int lose)throws ListSEException{kids.losePositionKid(id, lose);}
 
     //ejercicio 9 metodo para obtener un reporte por rango de edades
     public String reportByAge(){return kids.reportByAge();}
 
     //ejercicio 10
-    public void addToFinalNameChar(String letter) {kids.addToFinalNameChar(letter);}
+    public void addToFinalNameChar(String letter)throws ListSEException {kids.addToFinalNameChar(letter);}
 
     //metodo para intecambiar extremos
     public void changeExtremes(){kids.changeExtremes();}

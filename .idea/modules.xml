@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/manage_store-main/manage_store.iml" filepath="$PROJECT_DIR$/manage_store-main/manage_store.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/parcial1_prog2_corregido.iml" filepath="$PROJECT_DIR$/.idea/parcial1_prog2_corregido.iml" />
+      <module fileurl="file://$PROJECT_DIR$/list_se/tads/tads.iml" filepath="$PROJECT_DIR$/list_se/tads/tads.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tads-master/tads (1).iml" filepath="$PROJECT_DIR$/tads-master/tads (1).iml" />
+    </modules>
+  </component>
+</project>

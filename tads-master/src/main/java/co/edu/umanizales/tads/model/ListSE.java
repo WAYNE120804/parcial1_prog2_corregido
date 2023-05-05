@@ -4,6 +4,7 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 
 import co.edu.umanizales.tads.controller.dto.KidDTO;
 import co.edu.umanizales.tads.controller.dto.ReportKidsLocationGenderDTO;
+import co.edu.umanizales.tads.exception.ListSEException;
 import lombok.Data;
 
 @Data
@@ -27,21 +28,30 @@ public class ListSE {
     no
         metemos el niño en el costal y ese costal es la cabeza
      */
-    public void add(Kid kid)  {
-        if (head != null) {
-            Node temp = head;
-            while (temp.getNext() != null) {
-                  temp = temp.getNext();
-            }
-            /// Parado en el último
-            Node newNode = new Node(kid);
-            temp.setNext(newNode);
+    public void add(Kid kid)  throws ListSEException {
+        if (kid==null) {
+        throw new ListSEException("no se puede agregar un niño sin datos a la lista");
+        }
+            if (head != null) {
+                Node temp = head;
+                while (temp.getNext() != null) {
+                    if (temp.getData().getIdentification().equals(kid.getIdentification())) {
+                        throw new ListSEException("ya existe un niño");
+                    }
+                    temp = temp.getNext();
+                }
+                if (temp.getData().getIdentification().equals(kid.getIdentification())) {
+                    throw new ListSEException("ya existe un niño");
+                }
+                /// Parado en el último
+                Node newNode = new Node(kid);
+                temp.setNext(newNode);
 
-        }
-        else {
-            head = new Node(kid);
-        }
-        size++;
+            } else {
+                head = new Node(kid);
+            }
+            size++;
+
     }
 
     /* Adicionar al inicio
@@ -65,7 +75,7 @@ public class ListSE {
     }
 
     // ejercicio 1 invertir lista
-    public void invert() {
+    public void invert() throws ListSEException {
         if (this.head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
@@ -74,11 +84,13 @@ public class ListSE {
                 temp = temp.getNext();
             }
             this.head = listCp.getHead();
+        }else {
+            throw new ListSEException("no hay datos en la lista para invertir");
         }
     }
 
     //ejercicio 2 ordenar niños al comienzo
-    public void orderBoysToStart()  {
+    public void orderBoysToStart() throws ListSEException {
         if (this.head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
@@ -97,7 +109,7 @@ public class ListSE {
 
     //ejercicio 3 intercalar niño niña
 
-    public void intercalateBoyGirl(){
+    public void intercalateBoyGirl() throws ListSEException{
         Node temp=head;
         ListSE ListSECp=new ListSE();
         if(head!=null) {
@@ -189,7 +201,7 @@ public class ListSE {
     }
 
 
-    public void gainPositionKid(String id, int gain) {
+    public void gainPositionKid(String id, int gain) throws ListSEException {
         Node temp = head;
         gain = 0;
         int sum = 0;
@@ -212,7 +224,7 @@ public class ListSE {
 
     // ejercicio 8 metodo para hacer que un niño pierda posiciones dadas
 
-    public void losePositionKid(String id, int lose) {
+    public void losePositionKid(String id, int lose)throws ListSEException {
         Node temp = head;
         lose = 0;
         int sum = 0;
@@ -264,7 +276,7 @@ public class ListSE {
 
 
     //ejercicio 10 permite enviar al final un niño que comienze con una letra dada
-    public void addToFinalNameChar(String letter)  {
+    public void addToFinalNameChar(String letter)throws ListSEException  {
         ListSE listSECp=new ListSE();
         Node temp=head;
         if (this.head!=null){
@@ -286,9 +298,9 @@ public class ListSE {
         Node temp = this.head;
         if (head != null) {
             while (temp != null) {
-                temp.getNext();
+                temp=temp.getNext();
                 while ((!temp.getData().getIdentification().equals(id))) {
-                    temp.getNext();
+                    temp=temp.getNext();
                 }
 
             }
