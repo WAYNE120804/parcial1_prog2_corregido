@@ -55,7 +55,12 @@ public class ListDEController {
     //ejercicio 1 invertir lista
     @GetMapping(path ="/invertlistde")
     public ResponseEntity<ResponseDTO> invertListDe(){
-        listDEService.invertListDe();
+        try{
+            listDEService.invertListDe();
+        }catch (ListDEException e){
+            return new ResponseEntity<>(new ResponseDTO(
+                    200,e.getMessage(),null), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseDTO(
                 200,"la lista se ha invertido",null), HttpStatus.OK);
     }
@@ -79,7 +84,13 @@ public class ListDEController {
     //ejercicio 4  eleminiar una mascota que tenga una edad determinada
     @GetMapping(path ="/deletepet/{age}")
     public ResponseEntity<ResponseDTO> deletePetByAge(@PathVariable byte age){
-        listDEService.deletePetByAge(age);
+        try {
+            listDEService.deletePetByAge(age);
+        }catch (ListDEException e){
+            return new ResponseEntity<>(new ResponseDTO(
+                    200,e.getMessage(),null), HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(new ResponseDTO(
                 200,"mascota eliminada",null), HttpStatus.OK);
     }

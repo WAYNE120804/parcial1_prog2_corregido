@@ -34,10 +34,10 @@ public class ListSEService {
 
     // ejercicios 4
     //elimina un niño que tenga una edad determinda
-    public void deleteKidbyAge(byte age){kids.deleteKidbyAge( age);}
+    public void deleteKidbyAge(byte age)throws ListSEException{kids.deleteKidbyAge( age);}
 
     //ejercicio 5 promedio de edades
-    public float averageAge(){return kids.averageAge();}
+    public float averageAge()throws ListSEException{return kids.averageAge();}
 
     //ejercicio 6 reporte de niños por ciudad
     public int getCountKidsBylocationsCode(String code){return  kids.getCountKidsBylocationCode(code);}

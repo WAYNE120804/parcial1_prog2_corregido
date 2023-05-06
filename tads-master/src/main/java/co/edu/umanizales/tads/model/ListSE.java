@@ -35,7 +35,8 @@ public class ListSE {
             if (head != null) {
                 Node temp = head;
                 while (temp.getNext() != null) {
-                    if (temp.getData().getIdentification().equals(kid.getIdentification())) {
+                    if (temp.getData().getIdentification()==null||
+                            temp.getData().getIdentification().equals(kid.getIdentification())) {
                         throw new ListSEException("ya existe un niño");
                     }
                     temp = temp.getNext();
@@ -63,7 +64,10 @@ public class ListSE {
     no
         meto el niño en un costal y lo asigno a la cabez
      */
-    public void addToStart(Kid kid) {
+    public void addToStart(Kid kid) throws ListSEException{
+        if (kid==null){
+            throw new ListSEException("no se puede agregar un niño sin datos");
+        }
         if (head != null) {
             Node newNode = new Node(kid);
             newNode.setNext(head);
@@ -91,6 +95,9 @@ public class ListSE {
 
     //ejercicio 2 ordenar niños al comienzo
     public void orderBoysToStart() throws ListSEException {
+        if (this.head==null){
+            throw new ListSEException("la lista esta vacia");
+        }
         if (this.head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
@@ -109,62 +116,74 @@ public class ListSE {
 
     //ejercicio 3 intercalar niño niña
 
-    public void intercalateBoyGirl() throws ListSEException{
-        Node temp=head;
-        ListSE ListSECp=new ListSE();
-        if(head!=null) {
-            while (temp != null){
-                if (temp.getData().getGender() == 'M') {
-                    if (temp.getNext().getData().getGender() == 'F') {
-                        ListSECp.add((temp.getData()));
-                    } else if (temp.getNext().getData().getGender() == 'M') {
-                        temp= temp.getNext();
-                    }
-                } else if (temp.getData().getGender() == 'F') {
-                    if (temp.getNext().getData().getGender() == 'M') {
-                        ListSECp.add((temp.getData()));
-                    } else if (temp.getNext().getData().getGender() == 'F') {
-                        temp=temp.getNext();
-                    }
-                    temp=temp.getNext();
+    public void intercalateBoyGirl() throws ListSEException {
+        if (head == null) {
+            throw new ListSEException("La lista está vacía.");
+        }
+
+        Node temp = head;
+        ListSE ListSECp = new ListSE();
+
+        while (temp != null) {
+            if (temp.getData().getGender() == 'M') {
+                if (temp.getNext() != null && temp.getNext().getData().getGender() == 'F') {
+                    ListSECp.add(temp.getData());
+                } else if (temp.getNext() != null && temp.getNext().getData().getGender() == 'M') {
+                    temp = temp.getNext();
+                }
+            } else if (temp.getData().getGender() == 'F') {
+                if (temp.getNext() != null && temp.getNext().getData().getGender() == 'M') {
+                    ListSECp.add(temp.getData());
+                } else if (temp.getNext() != null && temp.getNext().getData().getGender() == 'F') {
+                    temp = temp.getNext();
                 }
             }
-            this.head = ListSECp.getHead();
+
+            temp = temp.getNext();
         }
+        head = ListSECp.getHead();
     }
+
+
 
     // ejercicios 4
     //elimina un niño que tenga una edad determinda
-    public void deleteKidbyAge(byte age) {
+    public void deleteKidbyAge(byte age) throws ListSEException {
+        if (this.head == null) {
+            throw new ListSEException("La lista está vacía.");
+        }
+
         Node temp = this.head;
         ListSE listSECp = new ListSE();
+        while (temp != null) {
+            if (temp.getData().getAge() != age) {
+                listSECp.addToStart(temp.getData());
+            }
+            temp = temp.getNext();
+        }
+        this.head = listSECp.getHead();
+    }
+
+
+
+
+    //ejercicio 5 promedio de edades
+    public float averageAge() throws ListSEException {
+        float count = 0;
+        float ages = 0;
         if (this.head != null) {
-            while (temp != null) {
-                if (temp.getData().getAge() != age) {
-                    listSECp.addToStart(temp.getData());
-                }
+            Node temp = this.head;
+            while (temp.getNext() != null) {
+                count++;
+                ages = ages + temp.getData().getAge();
                 temp = temp.getNext();
             }
-            this.head = listSECp.getHead();
+            return (float) ages / count;
+        } else {
+            throw new ListSEException("La lista está vacía");
         }
     }
 
-    //ejercicio 5 promedio de edades
-    public float averageAge(){
-        float count=0;
-        float ages=0;
-        if (this.head != null) {
-            Node temp = this.head;
-            while (temp.getNext()!=null){
-                count++;
-                ages=ages+temp.getData().getAge();
-                temp=temp.getNext();
-            }
-            return (float) ages/count;
-        }else {
-            return (int)0;
-        }
-    }
 
 
     //ejercicio 6 reporte de niños por ciudad
@@ -185,20 +204,28 @@ public class ListSE {
     //ejercio 7
     //metodo para hacer que el costal de un niño adelante posiciones con una posiciones dadas
 
-    public int getPosById(String id) {
+    public int getPosById(String id) throws ListSEException {
         Node temp = this.head;
         int acum = 0;
+        boolean found = false;
         if (this.head != null) {
-            while (temp != null) {
-                while (!temp.getData().getIdentification().equals(id)) {
+            while (temp != null && !found) {
+                if (temp.getData().getIdentification().equals(id)) {
+                    found = true;
+                } else {
                     acum = acum + 1;
                     temp = temp.getNext();
-                    return acum;
                 }
             }
+            if (!found) {
+                throw new ListSEException("El niño con ID " + id + " no se encuentra en la lista.");
+            }
+        } else {
+            throw new ListSEException("La lista está vacía.");
         }
         return acum;
     }
+
 
 
     public void gainPositionKid(String id, int gain) throws ListSEException {
@@ -276,24 +303,29 @@ public class ListSE {
 
 
     //ejercicio 10 permite enviar al final un niño que comienze con una letra dada
-    public void addToFinalNameChar(String letter)throws ListSEException  {
-        ListSE listSECp=new ListSE();
-        Node temp=head;
-        if (this.head!=null){
-            while (temp!=null) {
-                if (temp.getData().getName().startsWith(letter) != temp.getData().getName().startsWith(letter)) {
-                    listSECp.addToStart(temp.getData());
-                } else {
+    public void addToFinalNameChar(String letter) throws ListSEException {
+        if (letter == null || letter.trim().equals("")) {
+            throw new ListSEException("Letter can't be null or empty");
+        }
+
+        ListSE listSECp = new ListSE();
+        Node temp = head;
+        if (this.head != null) {
+            while (temp != null) {
+                if (temp.getData().getName().startsWith(letter)) {
                     listSECp.add(temp.getData());
+                } else {
+                    listSECp.addToStart(temp.getData());
                 }
                 temp = temp.getNext();
             }
         }
-        this.head=listSECp.getHead();
-}
+        this.head = listSECp.getHead();
+    }
 
 
-// metodo para buscar niño por id
+
+    // metodo para buscar niño por id
     public Kid getKidById(String id) {
         Node temp = this.head;
         if (head != null) {

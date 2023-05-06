@@ -31,6 +31,7 @@ public class Pet {
 
     @Digits(integer = 10,fraction = 0,message = "el numero proporcionado no es valida")
     private String ownercontact;
+    @Size(min = 3, max = 8, message = "codigo invalido")
     private Location location;
 
 }

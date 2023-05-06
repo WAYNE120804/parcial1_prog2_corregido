@@ -103,17 +103,20 @@ public class ListDE {
         return null;
     }
     // ejercicio 1 invertir lista
-    public void invertListDe() {
-        if (this.headDE  != null) {
-            ListDE listDECp = new ListDE();
-            NodeDE temp = this.headDE;
-            while (temp != null) {
-                listDECp.addToStartPet(temp.getData());
-                temp = temp.getNext();
-            }
-            this.headDE = listDECp.getHeadDE();
+    public void invertListDe() throws ListDEException {
+        if (this.headDE == null) {
+            throw new ListDEException("La lista está vacía");
         }
+
+        ListDE listDECp = new ListDE();
+        NodeDE temp = this.headDE;
+        while (temp != null) {
+            listDECp.addToStartPet(temp.getData());
+            temp = temp.getNext();
+        }
+        this.headDE = listDECp.getHeadDE();
     }
+
 
     //ejercicio 2 ordenar machos al comienzo
     public void orderMalesToStart()throws ListDEException  {
@@ -138,19 +141,21 @@ public class ListDE {
 
     // ejercicios 4
     //elimina una mascota que tenga una edad determinda
-    public void deletePetbyAge(byte age) {
+    public void deletePetbyAge(byte age) throws ListDEException {
+        if (this.headDE == null) {
+            throw new ListDEException("Cannot delete pet by age from an empty list.");
+        }
         NodeDE temp = this.headDE;
         ListDE listDECp = new ListDE();
-        if (this.headDE != null) {
-            while (temp != null) {
-                if (temp.getData().getAge() != age) {
-                    listDECp.addToStartPet(temp.getData());
-                }
-                temp = temp.getNext();
+        while (temp != null) {
+            if (temp.getData().getAge() != age) {
+                listDECp.addToStartPet(temp.getData());
             }
-            this.headDE = listDECp.getHeadDE();
+            temp = temp.getNext();
         }
+        this.headDE = listDECp.getHeadDE();
     }
+
 
     //ejercicio 5 promedio de edades
     public float averageAge(){
@@ -185,20 +190,24 @@ public class ListDE {
     //ejercio 7
     //metodo para hacer que el costal de una mascota adelante posiciones con una posiciones dadas
 
-    public int getPosPetById(String id) {
+    public int getPosPetById(String id) throws ListDEException {
+        if (id == null || id.equals("")) {
+            throw new ListDEException("El ID de la mascota no puede ser nulo o vacío.");
+        }
         NodeDE temp = this.headDE;
         int acum = 0;
         if (this.headDE != null) {
             while (temp != null) {
-                while (!temp.getData().getId().equals(id)) {
-                    acum = acum + 1;
-                    temp = temp.getNext();
+                if (temp.getData().getId().equals(id)) {
                     return acum;
                 }
+                acum = acum + 1;
+                temp = temp.getNext();
             }
         }
-        return acum;
+        throw new ListDEException("No se encontró ninguna mascota con el ID especificado.");
     }
+
 
 
     public void gainPositionPet(String id, int gain)throws ListDEException {
@@ -276,10 +285,15 @@ public class ListDE {
 
     //ejercicio 10 permite enviar al final una mascota que comienze con una letra dada
     public void addToFinalPetNameChar(String letter) throws ListDEException {
-        ListDE listDECp=new ListDE();
-        NodeDE temp=headDE;
-        if (this.headDE!=null){
-            while (temp!=null) {
+        if (headDE == null) {
+            throw new ListDEException("La lista está vacía");
+        }
+
+        ListDE listDECp = new ListDE();
+        NodeDE temp = headDE;
+
+        try {
+            while (temp != null) {
                 if (temp.getData().getName().startsWith(letter) != temp.getData().getName().startsWith(letter)) {
                     listDECp.addToStartPet(temp.getData());
                 } else {
@@ -287,9 +301,14 @@ public class ListDE {
                 }
                 temp = temp.getNext();
             }
+        } catch (ListDEException e) {
+            throw new ListDEException("Error al agregar nodo a la lista");
         }
-        this.headDE=listDECp.getHeadDE();
+
+        headDE = listDECp.getHeadDE();
     }
+
+
 
     // metodo para intercambiar extremos
     public void changeExtremes() {

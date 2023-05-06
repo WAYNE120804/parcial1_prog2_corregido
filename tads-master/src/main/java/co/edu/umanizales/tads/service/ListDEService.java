@@ -25,7 +25,7 @@ public class ListDEService {
     public void addPet(Pet pet) throws ListDEException {pets.addPet(pet);}
 
     //ejercicio 1 invertir lista
-    public void invertListDe(){pets.invertListDe();}
+    public void invertListDe()throws ListDEException{pets.invertListDe();}
 
     //ejercicio 2 ordenar machos al comiezo
     public void orderMalesToStart()throws ListDEException{pets.orderMalesToStart();}
@@ -34,7 +34,7 @@ public class ListDEService {
 
 
     //ejercicio 4 eleminiar una mascota que tenga una edad determinada
-    public void deletePetByAge(byte age){pets.deletePetbyAge(age);}
+    public void deletePetByAge(byte age)throws ListDEException{pets.deletePetbyAge(age);}
 
     //ejercicio 5 promedio de edades
     public float averageAge(){return pets.averageAge();}

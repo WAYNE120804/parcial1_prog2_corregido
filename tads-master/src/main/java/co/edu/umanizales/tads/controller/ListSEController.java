@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -34,22 +35,31 @@ public class ListSEController {
 
     //adicionar niños
     @PostMapping
-    public ResponseEntity<ResponseDTO> addKid(@Validated @RequestBody KidDTO kidDTO) {
-        Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
-        if (location == null) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    404, "La ubicación no existe", null), HttpStatus.OK);
-        }
+    public ResponseEntity<ResponseDTO> addKid( @RequestBody @Valid KidDTO kidDTO) {
         try {
+            Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
+
+            if (location == null) {
+                return new ResponseEntity<>(new ResponseDTO(
+                        404, "La ubicación no existe", null), HttpStatus.OK);
+            }
+
             listSEService.add(new Kid(kidDTO.getIdentification(), kidDTO.getName(), kidDTO.getAge(),
                     kidDTO.getGender(), location));
-        } catch (ListSEException e) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    409, e.getMessage(), null), HttpStatus.OK);
+
+            return new ResponseEntity<>(new ResponseDTO(200, "Se ha adicionado el petacón", null),
+                    HttpStatus.OK);
+
+
+        }catch (ListSEException e) {
 
         }
-        return new ResponseEntity<>(new ResponseDTO(200, "Se ha adicionado el petacón", null),
-                HttpStatus.OK);
+        List<ErrorDTO> errorDTOS = new ArrayList<>();
+        ErrorDTO errorDTO = new ErrorDTO(Integer.parseInt("400"), "debe poner una identifacion distinta");
+        errorDTOS.add(errorDTO);
+        return new ResponseEntity<>(new ResponseDTO(400, "ya existe un niño con esa identificacion",
+                errorDTOS), HttpStatus.OK);
+
     }
 
     @GetMapping
@@ -102,7 +112,12 @@ public class ListSEController {
     // ejercicio 4 borrar niño por edad
     @GetMapping(path = "/deletekid/{age}")
     public ResponseEntity<ResponseDTO>deleteKidByAge(@PathVariable byte age){
-        listSEService.deleteKidbyAge(age);
+        try {
+            listSEService.deleteKidbyAge(age);
+        }catch (ListSEException e){
+            return new ResponseEntity<>(new ResponseDTO(
+                    200,e.getMessage(),null), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseDTO(
                 200,"niño eliminado",null), HttpStatus.OK);
     }
@@ -110,8 +125,13 @@ public class ListSEController {
     //ejercicio 5 promedio de edades
     @GetMapping(path = "/averageage")
     public ResponseEntity<ResponseDTO>daverageAge(){
+        try {
+            return new ResponseEntity<>(new ResponseDTO(
+                    200,(float)listSEService.averageAge(),null), HttpStatus.OK);
+        }catch (ListSEException e){
         return new ResponseEntity<>(new ResponseDTO(
-                200,(float)listSEService.averageAge(),null), HttpStatus.OK);
+                200,e.getMessage(),null), HttpStatus.OK);
+        }
     }
 
     //ejercico 6 ubicaciones___________________________________________________________________________________________
