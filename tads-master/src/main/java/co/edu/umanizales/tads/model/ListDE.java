@@ -143,7 +143,7 @@ public class ListDE {
     //elimina una mascota que tenga una edad determinda
     public void deletePetbyAge(byte age) throws ListDEException {
         if (this.headDE == null) {
-            throw new ListDEException("Cannot delete pet by age from an empty list.");
+            throw new ListDEException("no se puede borrar de la lista.");
         }
         NodeDE temp = this.headDE;
         ListDE listDECp = new ListDE();

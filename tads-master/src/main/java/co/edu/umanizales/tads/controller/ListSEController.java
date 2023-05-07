@@ -35,7 +35,7 @@ public class ListSEController {
 
     //adicionar niños
     @PostMapping
-    public ResponseEntity<ResponseDTO> addKid( @RequestBody @Valid KidDTO kidDTO) {
+    public ResponseEntity<ResponseDTO> addKid(@RequestBody @Valid KidDTO kidDTO) {
         try {
             Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
 
@@ -44,23 +44,37 @@ public class ListSEController {
                         404, "La ubicación no existe", null), HttpStatus.OK);
             }
 
+            if (kidDTO.getAge() <= 0) {
+                throw new IllegalArgumentException("La edad del niño debe ser mayor a cero");
+            }
+
+            if (kidDTO.getName().isEmpty()) {
+                throw new IllegalArgumentException("El nombre del niño no puede estar vacío");
+            }
+
             listSEService.add(new Kid(kidDTO.getIdentification(), kidDTO.getName(), kidDTO.getAge(),
                     kidDTO.getGender(), location));
 
             return new ResponseEntity<>(new ResponseDTO(200, "Se ha adicionado el petacón", null),
                     HttpStatus.OK);
 
-
-        }catch (ListSEException e) {
-
+        } catch (ListSEException e) {
+            // Manejo de excepción ListSEException
+        } catch (IllegalArgumentException e) {
+            List<ErrorDTO> errorDTOS = new ArrayList<>();
+            ErrorDTO errorDTO = new ErrorDTO(Integer.parseInt("400"), e.getMessage());
+            errorDTOS.add(errorDTO);
+            return new ResponseEntity<>(new ResponseDTO(400, "Error en la solicitud", errorDTOS),
+                    HttpStatus.OK);
         }
-        List<ErrorDTO> errorDTOS = new ArrayList<>();
-        ErrorDTO errorDTO = new ErrorDTO(Integer.parseInt("400"), "debe poner una identifacion distinta");
-        errorDTOS.add(errorDTO);
-        return new ResponseEntity<>(new ResponseDTO(400, "ya existe un niño con esa identificacion",
-                errorDTOS), HttpStatus.OK);
 
+        List<ErrorDTO> errorDTOS = new ArrayList<>();
+        ErrorDTO errorDTO = new ErrorDTO(Integer.parseInt("400"), "Debe poner una identificación distinta");
+        errorDTOS.add(errorDTO);
+        return new ResponseEntity<>(new ResponseDTO(400, "Ya existe un niño con esa identificación",
+                errorDTOS), HttpStatus.OK);
     }
+
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getKids(){
@@ -124,7 +138,7 @@ public class ListSEController {
 
     //ejercicio 5 promedio de edades
     @GetMapping(path = "/averageage")
-    public ResponseEntity<ResponseDTO>daverageAge(){
+    public ResponseEntity<ResponseDTO>averageAge(){
         try {
             return new ResponseEntity<>(new ResponseDTO(
                     200,(float)listSEService.averageAge(),null), HttpStatus.OK);
