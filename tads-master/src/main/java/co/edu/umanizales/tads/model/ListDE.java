@@ -45,7 +45,7 @@ public class ListDE {
             }
             NodeDE newNode= new NodeDE(pet);
             temp.setNext(newNode);
-            temp.setPrevi(temp);
+           newNode.setPrevi(temp);
         }else {
             NodeDE newNode=new NodeDE(pet);
             setHeadDE(newNode);
@@ -340,8 +340,42 @@ public class ListDE {
         }
     }
 
+    /*
+    pregunto a cabeza si tiene datos
+        si el nodo a eliminar es el primero le digo a cabeza sea igual al nodo siguiente y despues le digo a la cabeza
+        que el previous sea igual a nulo.
+        si tiene datos, le digo a temporal que recorra la lista hasta estar parado en el nodo que tenga el mismo Id que
+        voy a elminar, cuando este parado en este le digo al previous del siguiente que tome al anterior, y al nodo
+        anterior donde estoy que su siguiente tome al siguiente de donde estoy parado.
+
+        si el nodo del donde estoy parado es el ultimo le digo al previous de este sea igual a nulo
 
 
+     */
+    public void deletePetByIdInNode(String id) {
+        if (this.headDE != null) {
+
+            if (this.headDE.getData().getId().equals(id)) {
+                this.headDE=headDE.getNext();
+                if(this.headDE !=null) {
+                    this.headDE.setPrevi(null);
+                }else {
+                    this.headDE=null;
+                }
+            } else {
+                NodeDE temp = this.headDE;
+                while (temp!=null){
+                    if (temp.getData().getId().equals(id)) {
+                        temp.getPrevi().setNext(temp.getNext());
+                        if (temp.getNext()!=null){
+                            temp.getNext().setPrevi(temp.getPrevi());
+                        }
+                    }
+                    temp=temp.getNext();
+                }
+            }
+        }
+    }
 
 
 }

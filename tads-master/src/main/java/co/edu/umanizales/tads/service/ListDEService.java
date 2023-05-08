@@ -60,4 +60,6 @@ public class ListDEService {
     //metodo para obtener la lista de ciudad y ademas se sabra cuantos hembras y machos hay por separado
     public void getReportPetsByLocationGendersByAge(byte age, ReportPetsLocationGenderDTO report){
         pets.getReportPetsByLocationGendersByAge(age,report);}
+
+    public void deletePetByIdInNode(String id){pets.deletePetByIdInNode(id);}
 }

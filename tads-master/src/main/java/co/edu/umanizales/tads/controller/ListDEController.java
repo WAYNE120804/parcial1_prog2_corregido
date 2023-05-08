@@ -231,4 +231,12 @@ public class ListDEController {
         listDEService.getReportPetsByLocationGendersByAge(age,report);
         return new ResponseEntity<>(new ResponseDTO(200,report, null), HttpStatus.OK);
     }
+
+    //obtener una informe de niños por cada ciudad con su respetivo genero
+    @GetMapping(path = "/deletepetbyidinnode/{id}")
+    public ResponseEntity<ResponseDTO> deletePetByIdInNode(@PathVariable String id) {
+        listDEService.deletePetByIdInNode(id);
+        return new ResponseEntity<>(new ResponseDTO(200,"Se ha eliminado la mascota",
+                null), HttpStatus.OK);
+    }
 }
