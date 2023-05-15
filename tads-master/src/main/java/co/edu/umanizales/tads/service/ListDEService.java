@@ -8,6 +8,8 @@ import co.edu.umanizales.tads.model.Pet;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Data
 @Service
 public class ListDEService {
@@ -19,7 +21,7 @@ public class ListDEService {
 
     public NodeDE getPets(){return pets.getHeadDE();}
 
-    public String putToString(){return pets.toString();}
+    public ArrayList<Pet> printList(){return pets.printList();}
 
     //adcionar
     public void addPet(Pet pet) throws ListDEException {pets.addPet(pet);}

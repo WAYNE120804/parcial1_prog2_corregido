@@ -15,19 +15,16 @@ public class ListDE {
     private NodeDE headDE;
     private int size;
 
-    public String toString(){
-        StringBuilder sb=new StringBuilder();
-        NodeDE temp=this.headDE;
-        sb.append("[");
-        while (temp!=null) {
-            sb.append(temp.getData().toString());
-            temp = temp.getNext();
-            if (temp != null) {
-                sb.append(", ");
-            }
+    public ArrayList<Pet> printList(){
+        ArrayList<Pet> pets=new ArrayList<>();
+        if (this.headDE!=null){
+            NodeDE temp=this.headDE;
+            do{
+                pets.add(temp.getData());
+                temp = temp.getNext();
+            }while (temp!=this.headDE);
         }
-        sb.append("]");
-        return sb.toString();
+        return pets;
     }
 
 

@@ -31,7 +31,7 @@ public class ListDEController {
     @GetMapping(path ="/getlistde")
     public ResponseEntity<ResponseDTO> getPets(){
         return new ResponseEntity<>(new ResponseDTO(
-                200,listDEService.putToString(),null), HttpStatus.OK);
+                200,listDEService.printList(),null), HttpStatus.OK);
     }
 
     //adicionar mascota
@@ -44,7 +44,7 @@ public class ListDEController {
                         404, "La ubicación no existe", null), HttpStatus.OK);
             }
             listDEService.addPet(new Pet(petDTO.getType(), petDTO.getName(), petDTO.getGender(), petDTO.getId(),
-                    petDTO.getAge(), petDTO.getOwnercontact(), location));
+                    petDTO.getAge(), petDTO.getOwnercontact(), petDTO.getShower(), location));
 
             return new ResponseEntity<>(new ResponseDTO(200, "Se ha adicionado la mascota", null),
                     HttpStatus.OK);
