@@ -93,6 +93,12 @@ public class ListDEController {
     }
 
     //ejercicio 3 intercalar macho hembra
+    @GetMapping(path ="/intercalatemalefamle")
+    public ResponseEntity<ResponseDTO> intercalateMaleFamle()throws ListDEException{
+        listDEService.intercalateMaleFamle();
+        return new ResponseEntity<>(new ResponseDTO(
+                200,"mascotas intercaladas",null), HttpStatus.OK);
+    }
 
     //ejercicio 4  eleminiar una mascota que tenga una edad determinada
     @GetMapping(path ="/deletepet/{age}")
@@ -166,32 +172,23 @@ public class ListDEController {
 
     //ejercicio 7 ganar posicion de mascota
     @GetMapping(path = "/gainpositionpet")
-    public ResponseEntity<ResponseDTO>gainPositionById(@RequestBody Map<String, Object> requestBody){
-        try {
+    public ResponseEntity<ResponseDTO>gainPositionById(@RequestBody Map<String, Object> requestBody)
+            throws ListDEException{
             String id=(String) requestBody.get("id");
             Integer gain=(Integer)requestBody.get("gain");
             listDEService.gainPositionPet(id, gain);
-        }catch (ListDEException e){
             return new ResponseEntity<>(new ResponseDTO(
-                    200,e.getMessage(),null), HttpStatus.OK);
-        }
+                    200,"la mascota gano posicion",null), HttpStatus.OK);
 
-        return new ResponseEntity<>(new ResponseDTO(
-                200,"la mascota gano posicion",null), HttpStatus.OK);
     }
 
     // ejercicio 8 perder posicion de la mascota
     @GetMapping(path = "/losepositionpet")
-    public ResponseEntity<ResponseDTO>losePositionById(@RequestBody Map<String, Object> requestBody){
-        try {
+    public ResponseEntity<ResponseDTO>losePositionById(@RequestBody Map<String, Object> requestBody)
+            throws ListDEException{
             String id=(String) requestBody.get("id");
             Integer lose=(Integer)requestBody.get("lose");
             listDEService.losePositionPet(id, lose);
-        }catch (ListDEException e){
-            return new ResponseEntity<>(new ResponseDTO(
-                    200,e.getMessage(),null), HttpStatus.OK);
-        }
-
         return new ResponseEntity<>(new ResponseDTO(
                 200,"la mascota perdio posicion",null), HttpStatus.OK);
     }
@@ -218,7 +215,7 @@ public class ListDEController {
     }
 
     @GetMapping(path = "/change_extremes")
-    public ResponseEntity<ResponseDTO> changeExtremes() {
+    public ResponseEntity<ResponseDTO> changeExtremes() throws ListDEException{
         listDEService.changeExtremes();
         return new ResponseEntity<>(new ResponseDTO(200,"Se ha intercambiado los extremos",
                 null), HttpStatus.OK);

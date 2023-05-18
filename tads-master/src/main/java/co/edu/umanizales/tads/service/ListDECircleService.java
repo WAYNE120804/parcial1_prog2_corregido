@@ -25,4 +25,10 @@ public class ListDECircleService {
 
     //adcionar
     public void addPet(Pet pet) throws ListDEException {pets.addPet(pet);}
+
+    //adicionar al inicio
+    public void addToStartPet(Pet pet){pets.addToStartPet(pet);}
+
+    //bañar aleatoriamente
+    public void showerRandomlyPet() throws ListDEException {pets.showerRandomlyPet();}
 }

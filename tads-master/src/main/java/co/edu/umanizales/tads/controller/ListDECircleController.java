@@ -7,7 +7,6 @@ import co.edu.umanizales.tads.exception.ListDEException;
 import co.edu.umanizales.tads.model.Location;
 import co.edu.umanizales.tads.model.Pet;
 import co.edu.umanizales.tads.service.ListDECircleService;
-import co.edu.umanizales.tads.service.ListDEService;
 import co.edu.umanizales.tads.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,4 +61,26 @@ public class ListDECircleController {
                     errorDTOS), HttpStatus.OK);
         }
     }
+
+    @GetMapping(path = "/addtostartpet")
+    public ResponseEntity<ResponseDTO> addToStartPet(@RequestBody @Valid PetDTO petDTO) {
+            Location location = locationService.getLocationByCode(petDTO.getCodeLocation());
+            if (location == null) {
+                return new ResponseEntity<>(new ResponseDTO(
+                        404, "La ubicación no existe", null), HttpStatus.OK);
+            }
+            listDECircleService.addToStartPet(new Pet(petDTO.getType(), petDTO.getName(), petDTO.getGender(),
+                    petDTO.getId(), petDTO.getAge(), petDTO.getOwnercontact(), petDTO.getShower(), location));
+
+            return new ResponseEntity<>(new ResponseDTO(200, "Se ha adicionado la mascota", null),
+                    HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/showerrandomlypet")
+    public ResponseEntity<ResponseDTO> showerRandomlyPet() throws ListDEException {
+        listDECircleService.showerRandomlyPet();
+        return new ResponseEntity<>(new ResponseDTO(
+                200,"la mascota se ha bañado",null), HttpStatus.OK);
+    }
+
 }

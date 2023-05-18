@@ -17,6 +17,8 @@ public class ListDEService {
 
     public  ListDEService(){
         pets=new ListDE();
+
+
     }
 
     public NodeDE getPets(){return pets.getHeadDE();}
@@ -33,6 +35,7 @@ public class ListDEService {
     public void orderMalesToStart()throws ListDEException{pets.orderMalesToStart();}
 
     //ejercicio 3 intercalar macho hembra
+    public void intercalateMaleFamle() throws ListDEException{pets.intercalateMaleFamle();}
 
 
     //ejercicio 4 eleminiar una mascota que tenga una edad determinada
@@ -57,7 +60,7 @@ public class ListDEService {
     public void addToFinalPetNameChar(String letter)throws ListDEException {pets.addToFinalPetNameChar(letter);}
 
     // metodo para intercambiar extremos
-    public void changeExtremes() {pets.changeExtremes();}
+    public void changeExtremes()throws ListDEException {pets.changeExtremes();}
 
     //metodo para obtener la lista de ciudad y ademas se sabra cuantos hembras y machos hay por separado
     public void getReportPetsByLocationGendersByAge(byte age, ReportPetsLocationGenderDTO report){
