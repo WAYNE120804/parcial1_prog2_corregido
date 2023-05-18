@@ -1,14 +1,10 @@
 package co.edu.umanizales.tads.model;
 
-import co.edu.umanizales.tads.controller.dto.ReportKidsLocationGenderDTO;
+
 import co.edu.umanizales.tads.controller.dto.ReportPetsLocationGenderDTO;
 import co.edu.umanizales.tads.exception.ListDEException;
-import co.edu.umanizales.tads.exception.ListSEException;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import java.util.ArrayList;
-import java.util.List;
 
 @Data
 public class ListDE {
@@ -22,7 +18,7 @@ public class ListDE {
             do{
                 pets.add(temp.getData());
                 temp = temp.getNext();
-            }while (temp!=this.headDE);
+            }while (temp!=null);
         }
         return pets;
     }
@@ -54,6 +50,7 @@ public class ListDE {
         NodeDE newNode=new NodeDE(pet);
         if(this.headDE!=null){
             this.headDE.setPrevi(newNode);
+            newNode.setNext(this.headDE);
         }
         this.headDE=newNode;
         size++;
@@ -76,26 +73,41 @@ public class ListDE {
     }
 
     //metodo para añadir nuevo nodo y nueva mascota en un posicion
-    public void addPetInPos(Pet pet, int pos) {
-        NodeDE temp = headDE;
-        for (int i = 0; i < pos; i++) {
-            temp = temp.getNext();
-        }
+    public void addPetInPos(Pet pet, int pos2) throws ListDEException {
         NodeDE newNode = new NodeDE(pet);
-        temp.setNext(newNode);
+        if (pos2 > size) {
+            addPet(pet);
+        } else if (pos2 < 0) {
+            addToStartPet(pet);
+        } else {
+            NodeDE temp = headDE;
+            for (int i = 0; temp != null && i < pos2; i++) {
+                temp = temp.getNext();
+            }
+            if (temp != null) {
+                newNode.setNext(temp.getNext());
+                newNode.setPrevi(temp);
+                if (temp.getNext() != null) {
+                    temp.getNext().setPrevi(newNode);
+                }
+                temp.setNext(newNode);
+                size++;
+            }
+        }
     }
+
+
 
     // metodo para buscar una mascota por id
     public Pet getPetById(String id) {
+        NodeDE temp = this.headDE;
         if (this.headDE != null) {
-            NodeDE temp = this.headDE;
             while (temp!=null){
-                while (!temp.getNext().getData().getId().equals(id)){
-                    temp=temp.getNext();
+                if (temp.getData().getId().equals(id)){
+                    return temp.getData();
                 }
-                temp.getData();
+                temp=temp.getNext();
             }
-
         }
         return null;
     }
@@ -134,6 +146,33 @@ public class ListDE {
     }
 
     //ejercicio 3 intercalar macho hembra
+    public void intercalateMaleFamle() throws ListDEException {
+        ListDE listDE1 = new ListDE();
+        int sum = 0;
+        NodeDE temp = this.headDE;
+        if (this.headDE==null){
+            System.out.println("No hay niños en la lista");
+        }else {
+            while (temp!=null){
+                if (temp.getData().getGender()=='F'){
+                    listDE1.addToStartPet(temp.getData());
+                }
+                temp=temp.getNext();
+            }
+            temp=this.headDE;
+            while (temp!=null){
+                if (temp.getData().getGender()=='M'){
+                    listDE1.addInPosValidations(temp.getData(),sum);
+                    temp=temp.getNext();
+                    sum=sum+2;
+                }else {
+                    temp=temp.getNext();
+                }
+            }
+            this.headDE=listDE1.getHeadDE();
+        }
+    }
+
 
 
     // ejercicios 4
@@ -187,67 +226,61 @@ public class ListDE {
     //ejercio 7
     //metodo para hacer que el costal de una mascota adelante posiciones con una posiciones dadas
 
-    public int getPosPetById(String id) throws ListDEException {
-        if (id == null || id.equals("")) {
-            throw new ListDEException("El ID de la mascota no puede ser nulo o vacío.");
-        }
+    public int getPosPetById(String id)  {
         NodeDE temp = this.headDE;
-        int acum = 0;
+        int acum = 1;
         if (this.headDE != null) {
-            while (temp != null) {
-                if (temp.getData().getId().equals(id)) {
-                    return acum;
-                }
+            while (temp != null && temp.getData().getId().equals(id)) {
                 acum = acum + 1;
                 temp = temp.getNext();
             }
         }
-        throw new ListDEException("No se encontró ninguna mascota con el ID especificado.");
+        return acum;
     }
 
 
 
     public void gainPositionPet(String id, int gain)throws ListDEException {
-        NodeDE temp = headDE;
-        gain = 0;
-        int sum = 0;
+        NodeDE temp = this.headDE;
+        int sum=0;
         ListDE listDECp = new ListDE();
-        if (headDE != null) {
+        if (this.headDE != null) {
             while (temp != null) {
-                if (!temp.getNext().getData().getId().equals(id)) {
+                if (!temp.getData().getId().equals(id)) {
                     listDECp.addPet(temp.getData());
-                    temp = temp.getNext();
-                }else {
                     temp=temp.getNext();
-
+                } else {
+                    temp=temp.getNext();
                 }
             }
         }
-        sum = getPosPetById(id)-gain;
-        listDECp.addPetInPos(getPetById(id),gain);
-        this.headDE=listDECp.getHeadDE();
+        if (gain!=1) {
+            sum = gain - getPosPetById(id);
+            listDECp.addInPosValidations(getPetById(id), sum);
+        }else {
+            listDECp.addToStartPet(getPetById(id));
+        }
+        this.headDE = listDECp.getHeadDE();
     }
 
     // ejercicio 8 metodo para hacer que una mascota pierda posiciones dadas
     public void losePositionPet(String id, int lose)throws ListDEException {
-        NodeDE temp = headDE;
-        lose = 0;
-        int sum = 0;
+        NodeDE temp = this.headDE;
+        int sum=0;
         ListDE listDECp = new ListDE();
-        if (headDE != null) {
+        if (this.headDE != null) {
             while (temp != null) {
-                if (!temp.getNext().getData().getId().equals(id)) {
+                if (!temp.getData().getId().equals(id)) {
                     listDECp.addPet(temp.getData());
-                    temp = temp.getNext();
-                }else {
                     temp=temp.getNext();
-
+                } else {
+                    temp=temp.getNext();
                 }
             }
         }
         sum = getPosPetById(id)+lose;
-        listDECp.addPetInPos(getPetById(id),lose);
-        this.headDE=listDECp.getHeadDE();
+        listDECp.addInPosValidations(getPetById(id), sum);
+        this.headDE = listDECp.getHeadDE();
     }
 
     //ejercicio 9 obtener informe por edades
@@ -282,45 +315,40 @@ public class ListDE {
 
     //ejercicio 10 permite enviar al final una mascota que comienze con una letra dada
     public void addToFinalPetNameChar(String letter) throws ListDEException {
-        if (headDE == null) {
-            throw new ListDEException("La lista está vacía");
-        }
-
-        ListDE listDECp = new ListDE();
-        NodeDE temp = headDE;
-
-        try {
+        if (this.headDE != null) {
+            ListDE listDECp = new ListDE();
+            NodeDE temp = headDE;
             while (temp != null) {
-                if (temp.getData().getName().startsWith(letter) != temp.getData().getName().startsWith(letter)) {
-                    listDECp.addToStartPet(temp.getData());
-                } else {
+                if (temp.getData().getName().startsWith(letter)) {
                     listDECp.addPet(temp.getData());
+                } else {
+                    listDECp.addToStartPet(temp.getData());
                 }
                 temp = temp.getNext();
             }
-        } catch (ListDEException e) {
-            throw new ListDEException("Error al agregar nodo a la lista");
-        }
 
-        headDE = listDECp.getHeadDE();
+            this.headDE = listDECp.getHeadDE();
+        }
     }
+
 
 
 
     // metodo para intercambiar extremos
-    public void changeExtremes() {
-        if (this.headDE != null && this.headDE.getNext() != null) {
-            NodeDE temp = this.headDE;
+    public void changeExtremes()
+    {
+        if(headDE!=null && headDE.getNext()!=null) {
+            NodeDE temp = headDE;
             while (temp.getNext() != null) {
                 temp = temp.getNext();
             }
-            //temp está en el último
-            Pet copy = this.headDE.getData();
-            this.headDE.setData(temp.getData());
+            Pet copy = headDE.getData();
+            headDE.setData(temp.getData());
             temp.setData(copy);
         }
-
     }
+
+
 
     //metodo para obtener la lista de ciudad y ademas se sabra cuantos hembras y machos hay por separado
     public void getReportPetsByLocationGendersByAge(byte age, ReportPetsLocationGenderDTO report){
@@ -373,6 +401,40 @@ public class ListDE {
             }
         }
     }
+
+    public int getLength() {
+        int total = 0;
+        NodeDE temp = headDE;
+        while (temp != null) {
+            total++;
+            temp = temp.getNext();
+        }
+        return total;
+    }
+
+    public void addInPosValidations(Pet pet, int pos2) throws ListDEException {
+        NodeDE temp = headDE;
+        NodeDE newNode = new NodeDE(pet);
+        int listLength = getLength();
+        if (pos2 < 0 || pos2 >= listLength)
+            addPet(pet);
+        if (pos2 == 0) {
+            newNode.setNext(headDE);
+            this.headDE.setPrevi(newNode);
+            headDE = newNode;
+
+
+        } else {
+            for (int i = 0; temp.getNext() != null && i < pos2 - 1; i++) {
+                temp = temp.getNext();
+            }
+            newNode.setNext(temp.getNext());
+            newNode.setPrevi(temp);
+            temp.setNext(newNode);
+            temp.getNext().setPrevi(newNode);
+        }
+    }
+
 
 
 }

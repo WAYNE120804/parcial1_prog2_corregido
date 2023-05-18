@@ -115,12 +115,12 @@ public class ListSEController {
     public ResponseEntity<ResponseDTO>intercalateBoyGirl(){
         try {
             listSEService.intercalateBoyGirl();
+            return new ResponseEntity<>(new ResponseDTO(
+                    200,"los niños fueron intercalados",null), HttpStatus.OK);
         }catch(ListSEException e){
             return new ResponseEntity<>(new ResponseDTO(
                     200,e.getMessage(),null), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ResponseDTO(
-                200,"los niños fueron intercalados",null), HttpStatus.OK);
     }
 
     // ejercicio 4 borrar niño por edad
@@ -197,33 +197,24 @@ public class ListSEController {
 
     //ejercicio 7 ganar posicion de niño
     @GetMapping(path = "/gainpositionkid")
-    public ResponseEntity<ResponseDTO>gainPositionById(@RequestBody Map<String, Object> requestBody){
-        try {
-            String id=(String) requestBody.get("id");
-            Integer gain=(Integer)requestBody.get("gain");
-            listSEService.gainPositionKid(id, gain);
-        }catch (ListSEException e){
-            return new ResponseEntity<>(new ResponseDTO(
-                    200,e.getMessage(),null), HttpStatus.OK);
+    public ResponseEntity<ResponseDTO> gainPositionById(@RequestBody Map<String, Object> requestBody)
+            throws ListSEException {
+        String id=(String) requestBody.get("id");
+        Integer gain=(Integer) requestBody.get("gain");
+        listSEService.gainPositionKid(id,gain);
+            return new ResponseEntity<>(new ResponseDTO(200, "el niño gano posicion", null),
+                    HttpStatus.OK);
 
-        }
-
-        return new ResponseEntity<>(new ResponseDTO(
-                200,"el niño gano posicion",null), HttpStatus.OK);
     }
+
 
     // ejercicio 8 perder posicion de niño
     @GetMapping(path = "/losepositionkid")
-    public ResponseEntity<ResponseDTO>losePositionById(@RequestBody Map<String, Object> requestBody){
-        try {
-            String id=(String) requestBody.get("id");
-            Integer lose=(Integer)requestBody.get("lose");
+    public ResponseEntity<ResponseDTO>losePositionById(@RequestBody Map<String, Object> requestBody)
+            throws ListSEException{
+        String id=(String) requestBody.get("id");
+        Integer lose=(Integer) requestBody.get("lose");
             listSEService.losePositionKid(id, lose);
-        }catch (ListSEException e){
-            return new ResponseEntity<>(new ResponseDTO(
-                    200,e.getMessage(),null), HttpStatus.OK);
-        }
-
         return new ResponseEntity<>(new ResponseDTO(
                 200,"el niño perdion posicion",null), HttpStatus.OK);
     }

@@ -16,7 +16,6 @@ public class ListSEService {
 
     public ListSEService() {
         kids = new ListSE();
-
     }
 
     // ejercicio 1 invertir lista
