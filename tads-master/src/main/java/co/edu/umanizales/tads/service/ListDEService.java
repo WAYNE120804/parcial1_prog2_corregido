@@ -67,4 +67,9 @@ public class ListDEService {
         pets.getReportPetsByLocationGendersByAge(age,report);}
 
     public void deletePetByIdInNode(String id){pets.deletePetByIdInNode(id);}
+
+    public void deletePet(String id)throws ListDEException{pets.deletePet(id);}
+
+    //adicionar en posicion
+    public void addInPosValidations(Pet pet, int pos2) throws ListDEException {pets.addInPosValidations(pet,pos2);}
 }

@@ -61,9 +61,9 @@ public class ListDE {
             NodeDE temp=headDE;
             ListDE listDECp=new ListDE();
             while (temp!=null) {
-                if (!temp.getNext().getData().getId().equals(id)) {
+                if (!temp.getData().getId().equals(id)) {
                     listDECp.addPet(temp.getData());
-                    temp = temp.getNext();
+
                 }
                 temp = temp.getNext();
             }

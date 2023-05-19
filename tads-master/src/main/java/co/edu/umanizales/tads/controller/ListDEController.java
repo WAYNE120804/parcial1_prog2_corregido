@@ -62,6 +62,33 @@ public class ListDEController {
                     errorDTOS), HttpStatus.OK);
         }
     }
+    @PostMapping(path = "/addinposition/{pos2}")
+    public ResponseEntity<ResponseDTO> addPetInPosition(@RequestBody @Valid PetDTO petDTO, @PathVariable int pos2) {
+        try {
+            Location location = locationService.getLocationByCode(petDTO.getCodeLocation());
+            if (location == null) {
+                return new ResponseEntity<>(new ResponseDTO(
+                        404, "La ubicación no existe", null), HttpStatus.OK);
+            }
+            listDEService.addInPosValidations(new Pet(petDTO.getType(), petDTO.getName(), petDTO.getGender(),
+                    petDTO.getId(), petDTO.getAge(), petDTO.getOwnercontact(), petDTO.getShower(), location), pos2);
+
+            return new ResponseEntity<>(new ResponseDTO(200, "Se ha adicionado la mascota", null),
+                    HttpStatus.OK);
+        } catch (ListDEException e) {
+            List<ErrorDTO> errorDTOS = new ArrayList<>();
+            ErrorDTO errorDTO = new ErrorDTO(Integer.parseInt("400"), "Debe poner un ID distinto");
+            errorDTOS.add(errorDTO);
+            return new ResponseEntity<>(new ResponseDTO(400, "Ya existe una mascota con esa identificacion",
+                    errorDTOS), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            List<ErrorDTO> errorDTOS = new ArrayList<>();
+            ErrorDTO errorDTO = new ErrorDTO(Integer.parseInt("400"), e.getMessage());
+            errorDTOS.add(errorDTO);
+            return new ResponseEntity<>(new ResponseDTO(400, "Error en los datos enviados",
+                    errorDTOS), HttpStatus.OK);
+        }
+    }
 
 
 
@@ -236,4 +263,13 @@ public class ListDEController {
         return new ResponseEntity<>(new ResponseDTO(200,"Se ha eliminado la mascota",
                 null), HttpStatus.OK);
     }
+
+    @GetMapping(path = "/deletepetbyid/{id}")
+    public ResponseEntity<ResponseDTO> deletePetById(@PathVariable String id)throws ListDEException {
+        listDEService.deletePet(id);
+        return new ResponseEntity<>(new ResponseDTO(200,"Se ha eliminado la mascota",
+                null), HttpStatus.OK);
+    }
+
+
 }
